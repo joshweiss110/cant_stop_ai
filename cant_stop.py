@@ -23,11 +23,15 @@ def show_dice_roll(dice_rolled, summed_options, temp_nums):
         can_continue = True
         new_summed_options = summed_options
     elif open_spots == 1:
+        can_continue = True
         for option in summed_options:
+            # print('option')
+            # print([option[0]])
+            # print(new_summed_options)
             overlaps = sum(el in option for el in temp_nums)
             if overlaps == 0:
-                new_summed_options.append(list(option[0]))
-                new_summed_options.append(list(option[1]))
+                new_summed_options.append([option[0]])
+                new_summed_options.append([option[1]])
             else:
                 new_summed_options.append(option)
     elif open_spots == 0:
@@ -77,6 +81,7 @@ def main():
         for chosen_val in chosen_sums:
             if chosen_val not in temp_nums:
                 temp_nums.append(chosen_val)
+                temp_nums.sort()
         board = update_board(board, chosen_sums)
         print(f'This is the new board:\n{board}')
         cont = int(input('To continue press 1, to exit press 0\n'))
