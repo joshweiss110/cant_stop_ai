@@ -25,9 +25,6 @@ def show_dice_roll(dice_rolled, summed_options, temp_nums):
     elif open_spots == 1:
         can_continue = True
         for option in summed_options:
-            # print('option')
-            # print([option[0]])
-            # print(new_summed_options)
             overlaps = sum(el in option for el in temp_nums)
             if overlaps == 0:
                 new_summed_options.append([option[0]])
