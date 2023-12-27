@@ -76,7 +76,7 @@ def update_board(board_dict, chosen_sums):
     return board_dict
 
 
-def take_turn(board):
+def take_turn(player, board):
     cont = 1
     temp_nums = []
     orig_board = copy.deepcopy(board)
