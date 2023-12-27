@@ -1,5 +1,10 @@
 import pandas as pd
 import random
+import copy
+from funcs import *
+
+
+FULL_BOARD = {2:3, 3:5, 4:7, 5:9, 6:1, 7:3, 8:1, 9:9, 10:7, 11:5, 12:3}
 
 
 def roll_dice():
@@ -8,14 +13,18 @@ def roll_dice():
         dice_rolled.append(random.randint(1, 6))
 
     summed_options = [[dice_rolled[0] + dice_rolled[1], dice_rolled[2] + dice_rolled[3]],
-                    [dice_rolled[0] + dice_rolled[2], dice_rolled[1] + dice_rolled[3]],
-                    [dice_rolled[0] + dice_rolled[3], dice_rolled[2] + dice_rolled[1]]]
+                      [dice_rolled[0] + dice_rolled[2], dice_rolled[1] + dice_rolled[3]],
+                      [dice_rolled[0] + dice_rolled[3], dice_rolled[2] + dice_rolled[1]]]
     return dice_rolled, summed_options
 
 
-def show_dice_roll(dice_rolled, summed_options, temp_nums):
+def show_dice_roll(dice_rolled, summed_options, temp_nums, board):
     print(f'You rolled: {dice_rolled}')
     print(f'Your temporary numbers are: {temp_nums}')
+    for col in board:
+        if board[col] == 'Complete':
+            summed_options = remove_occurrences(summed_options, col)
+            summed_options = [x for x in summed_options if x != []]
     open_spots = 3 - len(temp_nums)
     can_continue = False
     new_summed_options = []
@@ -27,8 +36,13 @@ def show_dice_roll(dice_rolled, summed_options, temp_nums):
         for option in summed_options:
             overlaps = sum(el in option for el in temp_nums)
             if overlaps == 0:
-                new_summed_options.append([option[0]])
-                new_summed_options.append([option[1]])
+                if len(option) == 1:
+                    new_summed_options.append([option[0]])
+                elif option[0] == option[1]:
+                    new_summed_options.append(option)
+                else:
+                    new_summed_options.append([option[0]])
+                    new_summed_options.append([option[1]])
             else:
                 new_summed_options.append(option)
     elif open_spots == 0:
@@ -53,37 +67,38 @@ def show_dice_roll(dice_rolled, summed_options, temp_nums):
         return -1
 
 
-def create_board():
-    board_dict = {}
-    for i in range(2,13):
-        board_dict[i] = 0
-    return board_dict
-
-
 def update_board(board_dict, chosen_sums):
     for val in chosen_sums:
-        board_dict[val] += 1
+        if board_dict[val] != 'Complete':
+            board_dict[val] += 1
+            if board_dict[val] >= FULL_BOARD[val]:
+                board_dict[val] = 'Complete'
     return board_dict
 
 
-def main():
-    board = create_board()
+def take_turn(board):
     cont = 1
     temp_nums = []
+    orig_board = copy.deepcopy(board)
+    print('The Current Board is:')
+    print(board)
     while cont:
         dice_rolled, summed_options = roll_dice()
-        chosen_sums = show_dice_roll(dice_rolled, summed_options, temp_nums)
+        chosen_sums = show_dice_roll(dice_rolled, summed_options, temp_nums, board)
         if chosen_sums == -1:
-            break
+            print('orig board is')
+            print(orig_board)
+            return orig_board
         for chosen_val in chosen_sums:
             if chosen_val not in temp_nums:
                 temp_nums.append(chosen_val)
                 temp_nums.sort()
         board = update_board(board, chosen_sums)
         print(f'This is the new board:\n{board}')
-        cont = int(input('To continue press 1, to exit press 0\n'))
-    print('Thanks for playing!')
+        cont = int(input('To continue press 1, to save progress press 0\n'))
+    return board
 
 
-main()
+if __name__ == "__main__":
+    take_turn(create_board())
 
