@@ -6,9 +6,13 @@ def start_game():
     game_continues = True
     players = []
     player_boards = {}
+    ai_num = 0
     num_players = int(input('How many players are there? '))
     for i in range(1, num_players+1):
-        name = input('What is your name? ')
+        name = input('What is your name? (For AI, type ai) ')
+        if name == 'ai':
+            ai_num += 1
+            name = f'ai {ai_num}'
         players.append(name)
         player_boards[name] = create_board()
     while game_continues:

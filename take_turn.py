@@ -56,15 +56,10 @@ def show_dice_roll(dice_rolled, summed_options, temp_nums, board):
                 can_continue = True
 
     if can_continue:
-        print('Therefore your options are:')
-        for i, new_option in enumerate(new_summed_options, 1):
-            print(f'Option {i}: {new_option}')
-        chosen_option = int(input('Which option would you like to choose? '))
-        chosen_sums = new_summed_options[chosen_option-1]
-        return chosen_sums
+        return new_summed_options
     else:
         print('You have no available moves :(')
-        return -1
+        return False
 
 
 def update_board(board_dict, chosen_sums, current_player, completed_cols):
@@ -88,8 +83,17 @@ def take_turn(current_player, player_boards):
             print(f'{player}\'s Board: {player_boards[player]}')
     while cont:
         dice_rolled, summed_options = roll_dice()
-        chosen_sums = show_dice_roll(dice_rolled, summed_options, temp_nums, temp_board)
-        if chosen_sums == -1:
+        new_summed_options = show_dice_roll(dice_rolled, summed_options, temp_nums, temp_board)
+        if new_summed_options:
+            print('Therefore your options are:')
+            for i, new_option in enumerate(new_summed_options, 1):
+                print(f'Option {i}: {new_option}')
+            if 'ai ' not in current_player:
+                chosen_option = int(input('Which option would you like to choose? '))
+            else:
+                chosen_option = random.randint(1, len(new_summed_options))
+            chosen_sums = new_summed_options[chosen_option - 1]
+        else:
             return player_boards
         for chosen_val in chosen_sums:
             if chosen_val not in temp_nums:
@@ -101,7 +105,10 @@ def take_turn(current_player, player_boards):
         for player in player_boards:
             if player != current_player:
                 print(f'{player}\'s Board: {player_boards[player]}')
-        cont = int(input('To continue press 1, to end turn and save progress press 0: '))
+        if 'ai ' not in current_player:
+            cont = int(input('To continue press 1, to end turn and save progress press 0: '))
+        else:
+            cont = random.randint(0, 1)
 
     for player in player_boards:
         if player != current_player:
