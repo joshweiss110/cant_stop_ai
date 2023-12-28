@@ -15,6 +15,7 @@ def start_game():
             name = f'ai {ai_num}'
         players.append(name)
         player_boards[name] = create_board()
+    random.shuffle(players)
     while game_continues:
         for player in players:
             print(f'It\'s {player}\'s turn!')

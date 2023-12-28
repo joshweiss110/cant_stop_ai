@@ -2,7 +2,7 @@ import pandas as pd
 import random
 import copy
 from funcs import *
-
+from ai_decisions import *
 
 FULL_BOARD = {2:3, 3:5, 4:7, 5:9, 6:11, 7:13, 8:11, 9:9, 10:7, 11:5, 12:3}
 
@@ -108,7 +108,7 @@ def take_turn(current_player, player_boards):
         if 'ai ' not in current_player:
             cont = int(input('To continue press 1, to end turn and save progress press 0: '))
         else:
-            cont = random.randint(0, 1)
+            cont = ai_decide_continue(current_player)
 
     for player in player_boards:
         if player != current_player:
