@@ -7,20 +7,9 @@ from ai_decisions import *
 FULL_BOARD = {2:3, 3:5, 4:7, 5:9, 6:11, 7:13, 8:11, 9:9, 10:7, 11:5, 12:3}
 
 
-def roll_dice():
-    dice_rolled = []
-    for i in range(4):
-        dice_rolled.append(random.randint(1, 6))
-
-    summed_options = [[dice_rolled[0] + dice_rolled[1], dice_rolled[2] + dice_rolled[3]],
-                      [dice_rolled[0] + dice_rolled[2], dice_rolled[1] + dice_rolled[3]],
-                      [dice_rolled[0] + dice_rolled[3], dice_rolled[2] + dice_rolled[1]]]
-    return dice_rolled, summed_options
-
-
 def show_dice_roll(dice_rolled, summed_options, temp_nums, board):
-    print(f'You rolled: {dice_rolled}')
-    print(f'Your temporary numbers are: {temp_nums}')
+    # print(f'You rolled: {dice_rolled}')
+    # print(f'Your temporary numbers are: {temp_nums}')
     for col in board:
         if isinstance(board[col], str):
             summed_options = remove_occurrences(summed_options, col)
@@ -58,7 +47,7 @@ def show_dice_roll(dice_rolled, summed_options, temp_nums, board):
     if can_continue:
         return new_summed_options
     else:
-        print('You have no available moves :(')
+        # print('You have no available moves :(')
         return False
 
 
@@ -77,17 +66,17 @@ def take_turn(current_player, player_boards):
     temp_nums = []
     completed_cols = []
     temp_board = copy.deepcopy(player_boards[current_player])
-    print(f'{current_player}\'s Board: {player_boards[current_player]}')
-    for player in player_boards:
-        if player != current_player:
-            print(f'{player}\'s Board: {player_boards[player]}')
+    # print(f'{current_player}\'s Board: {player_boards[current_player]}')
+    # for player in player_boards:
+    #     if player != current_player:
+            # print(f'{player}\'s Board: {player_boards[player]}')
     while cont:
         dice_rolled, summed_options = roll_dice()
         new_summed_options = show_dice_roll(dice_rolled, summed_options, temp_nums, temp_board)
         if new_summed_options:
-            print('Therefore your options are:')
-            for i, new_option in enumerate(new_summed_options, 1):
-                print(f'Option {i}: {new_option}')
+            # print('Therefore your options are:')
+            # for i, new_option in enumerate(new_summed_options, 1):
+                # print(f'Option {i}: {new_option}')
             if 'ai ' not in current_player:
                 chosen_option = int(input('Which option would you like to choose? '))
             else:
@@ -100,16 +89,17 @@ def take_turn(current_player, player_boards):
                 temp_nums.append(chosen_val)
                 temp_nums.sort()
         temp_board, completed_cols = update_board(temp_board, chosen_sums, current_player, completed_cols)
-        print(f'Your Temporary Numbers: {temp_nums}')
-        print(f'{current_player}\'s Board: {temp_board}')
-        for player in player_boards:
-            if player != current_player:
-                print(f'{player}\'s Board: {player_boards[player]}')
+        # print(f'Your Temporary Numbers: {temp_nums}')
+        # print(f'{current_player}\'s Board: {temp_board}')
+        # for player in player_boards:
+        #     if player != current_player:
+                # print(f'{player}\'s Board: {player_boards[player]}')
         if 'ai ' not in current_player:
             cont = int(input('To continue press 1, to end turn and save progress press 0: '))
         else:
-            cont = ai_decide_continue(current_player)
+            cont = ai_decide_continue(current_player, temp_nums)
 
+    # updating everyone's boards
     for player in player_boards:
         if player != current_player:
             for val in completed_cols:
